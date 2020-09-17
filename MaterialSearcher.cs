@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Chisel.Core;
+using Chisel.Import.Source.VPKTools;
 using UnityEngine;
 
 namespace AeternumGames.Chisel.Import.Source
@@ -50,6 +52,24 @@ namespace AeternumGames.Chisel.Import.Source
             Material output;
             m_MaterialCache.TryGetValue(name, out output);
             return output;
+        }
+
+        /// <summary>
+        /// Attempts to find a material inside of a VPK
+        /// </summary>
+        /// <param name="resource">The VPK resource</param>
+        /// <param name="path">The path to the VPK located in the game folder</param>
+        /// <returns></returns>
+        public Material FindMaterial( VPKResource resource, string path )
+        {
+            Debug.Log( $"Searching for material {path}." );
+
+            Material material = resource.GetMaterial( path );
+
+            //if( material == null )
+            //    material = FindMaterial( path );
+
+            return material;
         }
 
         /// <summary>

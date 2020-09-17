@@ -26,6 +26,7 @@ using Chisel.Components;
 using Chisel.Core;
 using System;
 using System.Collections.Generic;
+using Chisel.Import.Source.VPKTools;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -36,6 +37,8 @@ namespace AeternumGames.Chisel.Import.Source.ValveMapFormat2006
     /// </summary>
     public static class VmfWorldConverter
     {
+        private static List<VPKResource> vpkResources = new List<VPKResource>();
+
         private const float inchesInMeters = 0.03125f; // == 1.0f/16.0f as per source-sdk-2013 but halved to 1.0f/32.0f as it's too big for Unity.
 
         private struct DisplacementSide
@@ -49,8 +52,13 @@ namespace AeternumGames.Chisel.Import.Source.ValveMapFormat2006
         /// </summary>
         /// <param name="model">The model to import into.</param>
         /// <param name="world">The world to be imported.</param>
-        public static void Import(ChiselModel model, VmfWorld world)
+        public static void Import(ChiselModel model, VmfWorld world, string[] vpkPaths)
         {
+            foreach( string path in vpkPaths )
+            {
+                vpkResources.Add( new VPKResource( path ) );
+            }
+
             // create a material searcher to associate materials automatically.
             MaterialSearcher materialSearcher = new MaterialSearcher();
             HashSet<string> materialSearcherWarnings = new HashSet<string>();
@@ -101,9 +109,24 @@ namespace AeternumGames.Chisel.Import.Source.ValveMapFormat2006
                     //pr.IsVisible = false;
 
                     // find the material in the unity project automatically.
-                    Material material;
+                    Material material = null;
 
-                    // try finding the fully qualified texture name with '/' replaced by '.' so 'BRICK.BRICKWALL052D'.
+                    // try loading the material from a VPKResource
+                    foreach( VPKResource vpk in vpkResources )
+                    {
+                        if( !IsSpecialMaterial( side.Material )
+                            && !string.IsNullOrEmpty( side.Material )
+                            && !IsInvisibleMaterial( side.Material )
+                            && !IsExcludedMaterial( side.Material ))
+                            material = materialSearcher.FindMaterial( vpk, side.Material );
+
+                        if( material == null && materialSearcherWarnings.Add( side.Material ) )
+                        {
+                            //Debug.Log( $"" );
+                        }
+                    }
+
+                    /*// try finding the fully qualified texture name with '/' replaced by '.' so 'BRICK.BRICKWALL052D'.
                     string materialName = side.Material.Replace("/", ".");
                     if (materialName.Contains("."))
                     {
@@ -119,7 +142,7 @@ namespace AeternumGames.Chisel.Import.Source.ValveMapFormat2006
                         material = materialSearcher.FindMaterial(new string[] { materialName });
                         if (material == null && materialSearcherWarnings.Add(materialName))
                             Debug.Log("Chisel: Tried to find material '" + materialName + "' but it couldn't be found in the project.");
-                    }
+                    }*/
 
                     // fallback to default material.
                     if (material == null)

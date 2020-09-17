@@ -5,7 +5,8 @@
         "com.chisel.core",
         "com.chisel.components",
         "Unity.Mathematics",
-        "com.aeternumgames.chisel.decals"
+        "com.aeternumgames.chisel.decals",
+        "com.chisel.import.source.vpktools"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

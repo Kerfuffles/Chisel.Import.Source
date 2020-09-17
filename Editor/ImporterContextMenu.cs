@@ -21,12 +21,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 ////////////////////// https://github.com/Henry00IS/ ////////////////// http://aeternumgames.com //
-
+/*
 #if UNITY_EDITOR
 
 using Chisel.Components;
 using System;
 using System.IO;
+using Chisel.Import.Source.VPKTools;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,6 +38,7 @@ namespace AeternumGames.Chisel.Import.Source.Editor
         [MenuItem("GameObject/Chisel/Import/Valve Map Format 2006...")]
         private static void ImportValveMapFormat2006()
         {
+
             GameObject go = null;
             try
             {
@@ -75,8 +77,10 @@ namespace AeternumGames.Chisel.Import.Source.Editor
                 EditorUtility.ClearProgressBar();
                 if (go != null) go.SetActive(true);
             }
+
         }
     }
 }
 
 #endif
+*/
